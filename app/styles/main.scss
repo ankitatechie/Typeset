@@ -1,0 +1,22 @@
+@import 
+    'variables',
+    'home';
+
+body {
+    font-family: 'Open Sans',sans-serif;
+    line-height: 1.4em;
+    font-size: 14px;
+    background: $primary-bg;
+    margin: 0;
+}
+
+* {
+    -webkit-font-smoothing: antialiased;
+    font-smoothing: antialiased;
+    box-sizing: content-box;
+}
+
+a {
+    color: $color__dark-text;
+    text-decoration: none;
+}
