@@ -54,10 +54,12 @@ class Chatbox extends React.Component {
                 // non-standard and not supported in all browsers (IE9, for one)
                 el = document.createElement('div');
                 el.innerHTML = html;
+
+                // It is safer to add elemnt to fragment as it doesn't destroy
+                // actual DOM structure
                 frag = document.createDocumentFragment();
-                while (node = el.firstChild) {
-                    lastNode = frag.appendChild(node);
-                }
+                node = el.firstChild;
+                lastNode = frag.appendChild(node);
                 range.insertNode(frag);
 
                 // Preserve the selection
