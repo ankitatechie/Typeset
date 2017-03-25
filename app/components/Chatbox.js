@@ -9,40 +9,57 @@ class Chatbox extends React.Component {
         this.pasteHtmlAtCaret = this.pasteHtmlAtCaret.bind(this);
     }
 
+    componentDidMount() {
+        this.emojisData = this.props.emojisData;
+        this.refs.inputElem.focus();
+    }
+
     getInputValue(e) {
-        if (e.which === 32) {
-            const emojisData = this.props.emojisData;
-            let newMessage = this.refs.inputElem.innerHTML;
-            let imgTag;
-            for (let i = 0; i < emojisData.length; i++) {
-                if (newMessage.includes(emojisData[i].emojiStr)) {
-                    imgTag = `<img class="emoji" src=${emojisData[i].emojiImg} />`;
-                    this.pasteHtmlAtCaret(imgTag, newMessage, emojisData[i].emojiStr);
-                    // this.refs.inputElem.innerText = newMessage.replace(emojisData[i].emojiStr, '');
+        const newMessage = this.refs.inputElem.innerHTML;
+        let imgTag;
+        if (e.which === 32 || (e.which === 13 && e.shiftKey)) {
+            for (let i = 0; i < this.emojisData.length; i++) {
+                if (newMessage.includes(this.emojisData[i].emojiStr)) {
+                    imgTag = `<img class="emoji" src=${this.emojisData[i].emojiImg} />`;
+                    this.pasteHtmlAtCaret(imgTag, this.emojisData[i].emojiStr);
                 }
             }
         }
+        if (e.which === 13 && !e.shiftKey) {
+            e.preventDefault();
+            this.refs.inputElem.innerHTML = '';
+            this.refs.inputElem.focus();
+            this.props.addMessage(newMessage);
+        }
     }
 
-    pasteHtmlAtCaret(html, newMessage, str) {
-        let sel, range, el, frag, node, lastNode, chileNode;
+    pasteHtmlAtCaret(html, str) {
+        let sel;
+        let range;
+        let el;
+        let frag;
+        let node;
+        let lastNode;
+        let startPos;
         if (window.getSelection) {
             // IE9 and non-IE
             sel = window.getSelection();
             if (sel.getRangeAt && sel.rangeCount) {
+                startPos = sel.focusNode.data.indexOf(str);
                 range = sel.getRangeAt(0);
+                range.setStart(sel.focusNode, startPos);
                 range.deleteContents();
 
                 // Range.createContextualFragment() would be useful here but is
                 // non-standard and not supported in all browsers (IE9, for one)
-                el = document.createElement("div");
+                el = document.createElement('div');
                 el.innerHTML = html;
                 frag = document.createDocumentFragment();
-                while ((node = el.firstChild)) {
+                while (node = el.firstChild) {
                     lastNode = frag.appendChild(node);
                 }
                 range.insertNode(frag);
-                
+
                 // Preserve the selection
                 if (lastNode) {
                     range = range.cloneRange();
@@ -52,7 +69,7 @@ class Chatbox extends React.Component {
                     sel.addRange(range);
                 }
             }
-        } else if (document.selection && document.selection.type != "Control") {
+        } else if (document.selection && document.selection.type !== 'Control') {
             // IE < 9
             document.selection.createRange().pasteHTML(html);
         }
@@ -66,16 +83,14 @@ class Chatbox extends React.Component {
                         this.props.messages.map(function(message, index) {
                             return (
                                 <div className="message-wrapper" key={index}>
-                                    <span className="message">{message}</span>
+                                    <span className="message" dangerouslySetInnerHTML={{__html: message}}></span>
                                 </div>
                             );
                         })
                     }
                 </div>
                 <div ref="inputElem" className="textarea" contentEditable="true"
-                    onKeyPress={this.getInputValue} autoFocus>
-                    Hey ssup 
-                </div>
+                    onKeyPress={this.getInputValue} placeholder="Type your message with rich emojis 😃"></div>
             </div>
         );
     }

@@ -16,7 +16,6 @@
     background-color: $color__white;
     padding: 20px;
     position: relative;
-    /*box-shadow: 0 14px 28px rgba(0,0,0,.22), 0 10px 10px rgba(0,0,0,.22);*/
 
     .textarea {
         font-size: 14px;
@@ -28,6 +27,7 @@
         width: 390px;
         height: 80px;
         padding: 4px;
+        overflow-y: auto;
     }
 
     .emoji {
@@ -42,6 +42,7 @@
 
 .message-box {
     height: calc(100vh - 200px);
+    overflow-y: auto;
 }
 
 .message-wrapper {
@@ -57,4 +58,10 @@
     border-bottom-right-radius: 5px;
     border: 1px solid $color-border;
     color: $color__dark-text;
+}
+
+[contenteditable=true]:empty:before{
+  content: attr(placeholder);
+  display: block; /* For Firefox */
+  color: #c3c3c3;
 }
