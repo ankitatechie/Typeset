@@ -31,4 +31,4 @@ It should look something like the above image.
 
 ## Click here to see the demo 
 
-<a href="http://ankitatechie.github.io/Typeset">The Demo</a>
+<a href="http://ankitatechie.github.io/emoji-chatbox">The Demo</a>
